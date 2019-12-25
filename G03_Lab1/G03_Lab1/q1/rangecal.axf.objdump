@@ -1,0 +1,108 @@
+
+P:/G03_Lab1/q1/rangecal.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text
+			.global _start
+
+_start:
+			LDR R4, =RESULT    //r4 points to the result location
+   0:	e59f408c 	ldr	r4, [pc, #140]	; 94 <NUMBERS+0x18>
+			LDR R2, [R4,#4]    //R2 holds the number of elements in the list
+   4:	e5942004 	ldr	r2, [r4, #4]
+			ADD R3, R4, #8     //R3 POINTS TO THE FIRST NUMBER
+   8:	e2843008 	add	r3, r4, #8
+            LDR R0, [R3]       //R0 HOLDS THE FIRST NUMBER IN THE LIST
+   c:	e5930000 	ldr	r0, [r3]
+
+00000010 <MAX>:
+
+
+
+MAX:        SUBS R2, R2, #1    // DECREMENT THE LOOP COUNTER
+  10:	e2522001 	subs	r2, r2, #1
+       		BEQ DONE_MAX	// END LOOP IF COUNTER HAS REACHED 0
+  14:	0a000005 	beq	30 <DONE_MAX>
+			ADD R3, R3, #4     //R3 POINTS TO THE NEXT NUMBER IN THE LIST
+  18:	e2833004 	add	r3, r3, #4
+			LDR R1, [R3]       // R1 HOLDS THE NEXT NUMBER IN THE LIST
+  1c:	e5931000 	ldr	r1, [r3]
+            CMP R0, R1         // CHECK IF IT IS GREATER THAN THE MAXIMUM
+  20:	e1500001 	cmp	r0, r1
+			BGE MAX           // IF NO, BRANCH BACK TO THE LOOP
+  24:	aafffff9 	bge	10 <MAX>
+            MOV R0, R1         // IF YES, UPDATE THE CURRENT MAX
+  28:	e1a00001 	mov	r0, r1
+			B MAX             // BRANCH BACK TO THE LOOP
+  2c:	eafffff7 	b	10 <MAX>
+
+00000030 <DONE_MAX>:
+
+DONE_MAX: 		STR R0, [R4]
+  30:	e5840000 	str	r0, [r4]
+
+00000034 <RESET>:
+
+RESET:		MOV R2, #5         // SET BACK THE COUNTER
+  34:	e3a02005 	mov	r2, #5
+			LDR R4, =RESULT    // SET R4 POINT BACK TO RESULT LOCATION
+  38:	e59f4054 	ldr	r4, [pc, #84]	; 94 <NUMBERS+0x18>
+            ADD R3, R4, #8     // R3: FIRST NUMBER IN MIN LOOP
+  3c:	e2843008 	add	r3, r4, #8
+			LDR R5, [R3]       //R5: VALUE OF R3 IN MIN LOOP
+  40:	e5935000 	ldr	r5, [r3]
+
+00000044 <MIN>:
+
+MIN:        SUBS R2, R2, #1    // DECREMENT THE LOOP COUNTER
+  44:	e2522001 	subs	r2, r2, #1
+			BEQ DONE_MIN		   // END LOOP IF COUNTER HAS REACHED 0
+  48:	0a000005 	beq	64 <DONE_MIN>
+			ADD R3, R3, #4     //R3 POINTS TO THE NEXT NUMBER IN THE LIST
+  4c:	e2833004 	add	r3, r3, #4
+            LDR R1, [R3]       // R1 NOW HOLDS WHAT R3 POINTS
+  50:	e5931000 	ldr	r1, [r3]
+			CMP R1, R5         // CHECK IF THE MEXT NUMBER IS LARGER THAN CURRENT MIN
+  54:	e1510005 	cmp	r1, r5
+			BGE MIN             // IF NEXT NUMBER IS LARGER (NOT MIN), BACK TO LOOP
+  58:	aafffff9 	bge	44 <MIN>
+			MOV R5, R1          // R5 HOLES WHAT R1 FINDS
+  5c:	e1a05001 	mov	r5, r1
+			B MIN
+  60:	eafffff7 	b	44 <MIN>
+
+00000064 <DONE_MIN>:
+
+
+DONE_MIN: 		STR R5, [R4]
+  64:	e5845000 	str	r5, [r4]
+
+00000068 <FIND_RANGE>:
+
+FIND_RANGE:		SUBS R1, R0, R5
+  68:	e0501005 	subs	r1, r0, r5
+				STR  R1, [R4]
+  6c:	e5841000 	str	r1, [r4]
+
+00000070 <END>:
+
+END:        B END              // INFINITE LOOP!
+  70:	eafffffe 	b	70 <END>
+
+00000074 <RESULT>:
+  74:	00000000 	.word	0x00000000
+
+00000078 <N>:
+  78:	00000006 	.word	0x00000006
+
+0000007c <NUMBERS>:
+  7c:	00000200 	.word	0x00000200
+  80:	00000111 	.word	0x00000111
+  84:	0000011c 	.word	0x0000011c
+  88:	00000120 	.word	0x00000120
+  8c:	00000100 	.word	0x00000100
+  90:	0000012c 	.word	0x0000012c
+  94:	00000074 	.word	0x00000074

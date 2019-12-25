@@ -1,0 +1,159 @@
+
+P:/G03_Lab1/q2/maxmin.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text
+			.global _start
+
+_start:
+			LDR R4, =RESULT_MAX     //r4 points to the result max location
+   0:	e59f40ec 	ldr	r4, [pc, #236]	; f4 <PRODUCT+0xc>
+			LDR R2, [R4,#8]    		//R2 holds the number of elements in the list
+   4:	e5942008 	ldr	r2, [r4, #8]
+			ADD R3, R4, #28     	//R3 points to the first product 
+   8:	e284301c 	add	r3, r4, #28
+
+0000000c <MULTIPLY>:
+            								
+									//we have four numbers, x1, x2, x3, x4
+
+MULTIPLY: 	LDR R8, [R4,#12]		//R8 holds the input x1
+   c:	e594800c 	ldr	r8, [r4, #12]
+            LDR R9, [R4,#16] 		//R9 holds the input x2
+  10:	e5949010 	ldr	r9, [r4, #16]
+			ADD R6, R8, R9    		//R6 holds the sum of x1 and x2
+  14:	e0886009 	add	r6, r8, r9
+			LDR R8, [R4,#20]		//R8 holds the input x3
+  18:	e5948014 	ldr	r8, [r4, #20]
+            LDR R9, [R4,#24] 		//R9 holds the input x4
+  1c:	e5949018 	ldr	r9, [r4, #24]
+			ADD R7, R8, R9 			//R7 holds the sume of x3 and x4
+  20:	e0887009 	add	r7, r8, r9
+			MUL R6, R6, R7			//R6 holds the multiplication of the two sums
+  24:	e0060796 	mul	r6, r6, r7
+			STR R6, [R4, #28] 		//Store first product in memory			
+  28:	e584601c 	str	r6, [r4, #28]
+
+            LDR R8, [R4,#12]		//R8 holds the input x1
+  2c:	e594800c 	ldr	r8, [r4, #12]
+            LDR R9, [R4,#20] 		//R9 holds the input x3
+  30:	e5949014 	ldr	r9, [r4, #20]
+			ADD R6, R8, R9    		//R6 holds the sum of x1 and x3
+  34:	e0886009 	add	r6, r8, r9
+  			LDR R8, [R4,#16]		//R8 holds the input x2
+  38:	e5948010 	ldr	r8, [r4, #16]
+            LDR R9, [R4,#24] 		//R9 holds the input x4
+  3c:	e5949018 	ldr	r9, [r4, #24]
+			ADD R7, R8, R9  		//R7 holds the sume of x2 and x4
+  40:	e0887009 	add	r7, r8, r9
+			MUL R6, R6, R7			//R6 holds the multiplication of the two sums
+  44:	e0060796 	mul	r6, r6, r7
+			STR R6, [R4, #32] 		// Store second product in memory
+  48:	e5846020 	str	r6, [r4, #32]
+
+			LDR R8, [R4,#12]		//R8 holds the input x1
+  4c:	e594800c 	ldr	r8, [r4, #12]
+            LDR R9, [R4,#24] 		//R9 holds the input x4
+  50:	e5949018 	ldr	r9, [r4, #24]
+			ADD R6, R8, R9    		// R6 holds the sum of x1 and x4
+  54:	e0886009 	add	r6, r8, r9
+			LDR R8, [R4,#16]		//R8 holds the input x2
+  58:	e5948010 	ldr	r8, [r4, #16]
+            LDR R9, [R4,#20]		//R9 holds the input x3
+  5c:	e5949014 	ldr	r9, [r4, #20]
+			ADD R7, R8, R9 			//R7 holds the sume of x2 and x3
+  60:	e0887009 	add	r7, r8, r9
+			MUL R6, R6, R7			//R6 holds the multiplication of the two sums
+  64:	e0060796 	mul	r6, r6, r7
+			STR R6, [R4, #36] 		// Store third product in memory
+  68:	e5846024 	str	r6, [r4, #36]	; 0x24
+
+			LDR R0, [R3]       		//R0 holds the value of the first product
+  6c:	e5930000 	ldr	r0, [r3]
+
+00000070 <MAX>:
+
+MAX:       	SUBS R2, R2, #1    		// DECREMENT THE LOOP COUNTER
+  70:	e2522001 	subs	r2, r2, #1
+       		BEQ DONE_MAX		    // END LOOP IF COUNTER HAS REACHED 0
+  74:	0a000005 	beq	90 <DONE_MAX>
+			ADD R3, R3, #4     		// R3 POINTS TO THE NEXT product IN THE LIST
+  78:	e2833004 	add	r3, r3, #4
+			LDR R1, [R3]       		// R1 HOLDS THE NEXT value of product IN THE LIST
+  7c:	e5931000 	ldr	r1, [r3]
+            CMP R0, R1         		// CHECK IF IT IS GREATER THAN THE MAXIMUM
+  80:	e1500001 	cmp	r0, r1
+			BGE MAX           		// IF NO, BRANCH BACK TO THE LOOP
+  84:	aafffff9 	bge	70 <MAX>
+            MOV R0, R1         		// IF YES, UPDATE THE CURRENT MAX
+  88:	e1a00001 	mov	r0, r1
+			B MAX             		// BRANCH BACK TO THE LOOP
+  8c:	eafffff7 	b	70 <MAX>
+
+00000090 <DONE_MAX>:
+
+DONE_MAX: 	STR R0, [R4]			//store the value of R0 into the memory address stored in R4
+  90:	e5840000 	str	r0, [r4]
+
+00000094 <RESET>:
+
+RESET:		MOV R2, #3         		// SET BACK COUNTER
+  94:	e3a02003 	mov	r2, #3
+			LDR R4, =RESULT_MAX		// SET R4 back to RESULT_MAX
+  98:	e59f4054 	ldr	r4, [pc, #84]	; f4 <PRODUCT+0xc>
+            ADD R3, R4, #28     	// R3: FIRST NUMBER IN MIN LOOP
+  9c:	e284301c 	add	r3, r4, #28
+			LDR R5, [R3]       		// R5: VALUE OF R3 IN MIN LOOP
+  a0:	e5935000 	ldr	r5, [r3]
+
+000000a4 <MIN>:
+
+MIN:        SUBS R2, R2, #1    		// DECREMENT THE LOOP COUNTER
+  a4:	e2522001 	subs	r2, r2, #1
+			BEQ DONE_MIN		    // END LOOP IF COUNTER HAS REACHED 0
+  a8:	0a000005 	beq	c4 <DONE_MIN>
+			ADD R3, R3, #4     		//R3 POINTS TO THE NEXT product IN THE LIST
+  ac:	e2833004 	add	r3, r3, #4
+            LDR R1, [R3]       		// R1 NOW HOLDS WHAT R3 POINTS
+  b0:	e5931000 	ldr	r1, [r3]
+			CMP R1, R5         		// CHECK IF THE MEXT NUMBER IS LARGER THAN CURRENT MIN
+  b4:	e1510005 	cmp	r1, r5
+			BGE MIN             	// IF NEXT NUMBER IS LARGER (NOT MIN), BACK TO LOOP
+  b8:	aafffff9 	bge	a4 <MIN>
+			MOV R5, R1         		// R5 HOLDS WHAT R1 FINDS
+  bc:	e1a05001 	mov	r5, r1
+			B MIN
+  c0:	eafffff7 	b	a4 <MIN>
+
+000000c4 <DONE_MIN>:
+
+
+DONE_MIN: 	STR R5, [R4, #4]		//store the value of R5 into the memory address RESULT_MIN
+  c4:	e5845004 	str	r5, [r4, #4]
+
+000000c8 <END>:
+
+END:        B END              // INFINITE LOOP!
+  c8:	eafffffe 	b	c8 <END>
+
+000000cc <RESULT_MAX>:
+  cc:	00000000 	.word	0x00000000
+
+000000d0 <RESULT_MIN>:
+  d0:	00000000 	.word	0x00000000
+
+000000d4 <N>:
+  d4:	00000003 	.word	0x00000003
+
+000000d8 <NUMBERS>:
+  d8:	00000001 	.word	0x00000001
+  dc:	00000003 	.word	0x00000003
+  e0:	00000001 	.word	0x00000001
+  e4:	00000003 	.word	0x00000003
+
+000000e8 <PRODUCT>:
+	...
+  f4:	000000cc 	.word	0x000000cc
