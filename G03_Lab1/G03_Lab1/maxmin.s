@@ -1,6 +1,8 @@
 			.text
 			.global _start
 
+			//Trial: github see if changes in the comment gonna be committed
+
 _start:
 			LDR R4, =RESULT_MAX     //r4 points to the result max location
 			LDR R2, [R4,#8]    		//R2 holds the number of elements in the list
